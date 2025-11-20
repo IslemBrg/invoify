@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     env:
@@ -25,12 +25,12 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Analyze with SonarCloud
+      - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          args:
+          args: >
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
             -Dsonar.organization=${{ secrets.SONAR_ORG }}
           projectBaseDir: .
@@ -42,8 +42,8 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: islembrg
+          password: ${{ secrets.GH_TOKEN }}
 
       - name: Build Docker image
         run: docker build -t $IMAGE_NAME .
@@ -51,13 +51,31 @@ jobs:
       - name: Push Docker image
         run: docker push $IMAGE_NAME
 
-      - name: Setup kind cluster
-        uses: helm/kind-action@v1.8.0
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
 
-      - name: Load image into kind
-        run: kind load docker-image $IMAGE_NAME --name kind
+    steps:
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            echo "Logging into GHCR..."
+            docker login ghcr.io -u "islembrg" -p "${{ secrets.GH_TOKEN }}"
 
-      - name: Deploy to kind
-        run: |
-          kubectl apply -f k8s/deployment.yaml
-          kubectl apply -f k8s/service.yaml
+            echo "Pulling image..."
+            docker pull ghcr.io/islembrg/invoify:latest
+
+            echo "Loading into kind..."
+            kind load docker-image ghcr.io/islembrg/invoify:latest --name invoify
+
+            echo "Applying manifests..."
+            kubectl apply -f /root/invoify/manifests/deployment.yaml
+            kubectl apply -f /root/invoify/manifests/service.yaml
+
+            echo "Cluster status:"
+            kubectl get pods -o wide
+            kubectl get svc -o wide

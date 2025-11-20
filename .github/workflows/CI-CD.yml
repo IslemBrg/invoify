@@ -62,6 +62,7 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: root
           key: ${{ secrets.VPS_SSH_KEY }}
+          passphrase: ${{ secrets.VPS_SSH_PASSPHRASE }}
           script: |
             echo "Logging into GHCR..."
             docker login ghcr.io -u "islembrg" -p "${{ secrets.GH_TOKEN }}"

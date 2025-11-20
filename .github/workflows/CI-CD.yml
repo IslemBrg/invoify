@@ -64,13 +64,10 @@ jobs:
             echo "Pulling image..."
             docker pull ghcr.io/islembrg/invoify:latest
 
-            echo "Loading into kind..."
-            kind load docker-image ghcr.io/islembrg/invoify:latest --name invoify
-
             echo "Applying manifests..."
-            kubectl apply -f /root/invoify/manifests/deployment.yaml
-            kubectl apply -f /root/invoify/manifests/service.yaml
+            k3s kubectl apply -f /root/invoify/manifests/deployment.yaml
+            k3s kubectl apply -f /root/invoify/manifests/service.yaml
 
             echo "Cluster status:"
-            kubectl get pods -o wide
-            kubectl get svc -o wide
+            k3s kubectl get pods -o wide
+            k3s kubectl get svc -o wide

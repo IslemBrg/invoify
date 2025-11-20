@@ -60,10 +60,10 @@ jobs:
             echo "Logging into GHCR..."
             docker login ghcr.io -u "islembrg" -p "${{ secrets.GH_TOKEN }}"
 
-            echo "Pulling image..."
+            echo "Pulling latest image..."
             docker pull ghcr.io/islembrg/invoify:latest
 
-            echo "Applying manifests..."
+            echo "Applying manifests to k3s..."
             k3s kubectl apply -f /root/invoify/manifests/deployment.yaml
             k3s kubectl apply -f /root/invoify/manifests/service.yaml
 

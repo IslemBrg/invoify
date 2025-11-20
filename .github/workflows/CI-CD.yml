@@ -22,9 +22,6 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:
@@ -34,9 +31,6 @@ jobs:
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
             -Dsonar.organization=${{ secrets.SONAR_ORG }}
           projectBaseDir: .
-
-      - name: Build Next.js
-        run: yarn build
 
       - name: Log in to GHCR
         uses: docker/login-action@v2

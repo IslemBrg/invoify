@@ -1,7 +1,13 @@
 "use client";
 
+import type { Component, ComponentClass, LegacyRef } from "react";
+
 // React Signature Canvas
-import SignatureCanvas from "react-signature-canvas";
+import ReactSignatureCanvas from "react-signature-canvas";
+
+const SignatureCanvas = ReactSignatureCanvas as unknown as ComponentClass<
+    ReactSignatureCanvas["props"]
+>;
 
 // ShadCn
 import { Card, CardContent } from "@/components/ui/card";
@@ -51,7 +57,11 @@ const DrawSignature = ({ handleSaveSignature }: DrawSignatureProps) => {
                             minWidth={1.4} // Adjust the minWidth for a finer line
                             maxWidth={1.4} // Adjust the maxWidth for a finer line
                             throttle={0}
-                            ref={signatureRef}
+                            ref={
+                                signatureRef as unknown as LegacyRef<
+                                    Component<any, any, any>
+                                >
+                            }
                             penColor={selectedColor}
                             canvasProps={{
                                 style: {

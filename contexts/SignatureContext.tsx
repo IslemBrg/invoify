@@ -14,7 +14,7 @@ import React, {
 import { useFormContext, useWatch } from "react-hook-form";
 
 // Signature Canvas
-import SignatureCanvas from "react-signature-canvas";
+import ReactSignatureCanvas from "react-signature-canvas";
 
 // Variables
 import { SIGNATURE_COLORS, SIGNATURE_FONTS } from "@/lib/variables";
@@ -24,7 +24,7 @@ import { SignatureColor, SignatureFont } from "@/types";
 
 const defaultSignatureContext = {
     signatureData: "",
-    signatureRef: null as MutableRefObject<SignatureCanvas | null> | null,
+    signatureRef: null as MutableRefObject<ReactSignatureCanvas | null> | null,
     colors: [] as SignatureColor[],
     selectedColor: "",
     handleColorButtonClick: (color: string) => {},
@@ -73,7 +73,7 @@ export const SignatureContextProvider = ({
     const [signatureData, setSignatureData] = useState(signature ?? "");
 
     // Signature
-    const signatureRef = useRef<SignatureCanvas | null>(null);
+    const signatureRef = useRef<ReactSignatureCanvas | null>(null);
 
     // Colors
     const colors: SignatureColor[] = SIGNATURE_COLORS;

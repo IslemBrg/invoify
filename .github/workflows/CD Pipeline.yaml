@@ -66,6 +66,10 @@ jobs:
             k3s kubectl apply -f /root/invoify/manifests/deployment.yaml
             k3s kubectl apply -f /root/invoify/manifests/service.yaml
 
+            # Trigger a rollout restart so pods pick up the latest image
+            k3s kubectl rollout restart deployment/invoify
+
+
             echo "Cluster status:"
             k3s kubectl get pods -o wide
             k3s kubectl get svc -o wide

@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      IMAGE_NAME: ghcr.io/IslemBrg/invoify:latest
+      IMAGE_NAME: ghcr.io/islembrg/invoify:latest
 
     steps:
       - name: Checkout code
